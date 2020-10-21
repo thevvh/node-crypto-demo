@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Node Crypto</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      padding: 10px;
+    }
+
+    .button {
+      display: inline-block;
+      line-height: 1;
+      white-space: nowrap;
+      cursor: pointer;
+      -webkit-appearance: none;
+      text-align: center;
+      box-sizing: border-box;
+      outline: none;
+      margin: 0;
+      transition: .1s;
+      font-weight: 500;
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      padding: 12px 20px;
+      font-size: 14px;
+      border-radius: 4px;
+
+      color: #fff;
+      background-color: #409eff;
+      border-color: #409eff;
+    }
+
+    .button:active {
+      background: #3a8ee6;
+      border-color: #3a8ee6;
+      color: #fff;
+    }
+
+    .button + .button {
+      margin-left: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 200px;
+      margin-top: 20px;
+      padding: 10px;
+      box-sizing: border-box;
+      border: 1px solid #3d69ee;
+      border-radius: 4px;
+      outline: unset;
+      min-width: 100%;
+    }
+
+    .mt10 {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <div>
+    <div class="button" @click="encrypt">加密</div>
+    <div class="button" @click="decrypt">解密</div>
+  </div>
+  <div class="mt10">
+    <div class="button" :data-clipboard-text="encryptContent">复制加密内容</div>
+    <div class="button" :data-clipboard-text="decryptContent">复制解密内容</div>
+  </div>
+  <textarea id="decryptContent" placeholder="解密内容" v-model="encryptContent"></textarea>
+  <textarea id="encryptContent" placeholder="加密内容" v-model="decryptContent"></textarea>
+</div>
+
+<script>
+  new Vue({
+    el: '#app',
+    data() {
+      return {
+        encryptContent: '',
+        decryptContent: ''
+      }
+    },
+    mounted() {
+      new ClipboardJS('.button');
+    },
+    methods: {
+      async encrypt() {
+        if (!this.encryptContent) {
+          this.decryptContent = '';
+          return;
+        }
+        const res = await axios.post('/encrypt', {
+          content: this.encryptContent
+        });
+        this.decryptContent = res.data.res;
+      },
+      async decrypt() {
+        if (!this.decryptContent) {
+          this.encryptContent = '';
+          return;
+        }
+        const res = await axios.post('/decrypt', {
+          content: this.decryptContent
+        });
+        this.encryptContent = res.data.res;
+      }
+    }
+  })
+</script>
+</body>
+</html>

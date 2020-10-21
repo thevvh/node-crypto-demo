@@ -13,6 +13,17 @@ module.exports = appInfo => {
     ctoken: false,
   };
 
+  config.logger = {
+    consoleLevel: 'NONE',
+  };
+
+  config.cluster = {
+    listen: {
+      port: 3001,
+      hostname: '127.0.0.1', // 不建议设置 hostname 为 '0.0.0.0'，它将允许来自外部网络和来源的连接，请在知晓风险的情况下使用
+    }
+  }
+
   config.privateKey = `
 -----BEGIN PRIVATE KEY-----
 MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDBPolcEZT9RcoZ
